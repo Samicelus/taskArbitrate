@@ -133,8 +133,8 @@ handlers.runTest = async function(ctx, next) {
  * @samicelus 清空测试数据库
  **/
 handlers.reset = async function(ctx, next) {
-    await Machine.schema.remove({},false);
-    await Task.schema.remove({},false);
+    await Machine.schema.remove({});
+    await Task.schema.remove({});
     handlers.restSuccess(ctx, "done");
 };
 
