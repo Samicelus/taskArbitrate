@@ -17,8 +17,6 @@ async function onTaskDone(task) {
     machineObj.freeCpus += 1;
     machineObj.usedCpus -= 1;
     await machineObj.save();
-    //再次执行任务分配
-    await runSimulation();
 }
 
 // 当需要任务开始执行时调用, 返回当前可执行该任务的 Machine, 如没有满足条件的 Machine 则返回 null
@@ -108,7 +106,12 @@ async function simulateTaskRun(){
         //触发每个任务完成
         finishedTasks.forEach(async (task)=>{
             await onTaskDone(task);
-        })
+        });
+
+        //再次执行任务分配
+        await runSimulation();
+    }else{
+        console.log(`no more task to run, end arbitration`);
     }
 }
 
