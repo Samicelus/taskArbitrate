@@ -164,9 +164,10 @@ handlers.runTest = async function(ctx, next) {
  * @samicelus 分步测试
  **/
 handlers.runTestStep = async function(ctx, next) {
-    let logger_1 = await getTasks("");
-    let logger_2 = await simulateTaskRunOnce("");
-    handlers.restSuccess(ctx, logger_1+logger_2);
+    let logger = [];
+    await getTasks(logger);
+    await simulateTaskRunOnce(logger);
+    handlers.restSuccess(ctx, logger);
 };
 
 async function getTasks(logger) {
@@ -175,7 +176,7 @@ async function getTasks(logger) {
         machineId: {"$exists": false}
     };
     let tasks = await Task.schema.find(condition).sort({id: 1}).exec();
-    logger += `found ${tasks.length} tasks...\n`;
+    logger.push(`found ${tasks.length} tasks...`);
     await arbitrateTasks(tasks, logger)
 }
 
@@ -191,15 +192,13 @@ async function arbitrateTasks(tasks, logger){
             machine.freeCpus -= current_task.cpus;
             machine.usedCpus += current_task.cpus;
             await machine.save();
-            logger += `run task ${current_task.id} on machine ${machine.id}, cpu: ${machine.freeCpus}/${machine.cpus} \n`;
+            logger.push(`run task ${current_task.id} on machine ${machine.id}, cpu: ${machine.freeCpus}/${machine.cpus}`);
             current_task.machineId = machine.id;
             await current_task.save();
         }else{
-            logger += `no machine scheduled for task ${current_task.id} \n`;
+            logger.push(`no machine scheduled for task ${current_task.id}`);
         }
         await arbitrateTasks(tasks);
-    }else{
-        return logger;
     }
 }
 
@@ -221,17 +220,16 @@ async function simulateTaskRunOnce(logger){
 
         //消耗时间
         await Task.schema.update(condition,{"$inc":{"timeLeft":-timeDecrease}}, {"multi":true});
-        logger += `time passed by ${timeDecrease} sec \n`;
+        logger.push(`time passed by ${timeDecrease} sec`);
 
         //触发每个任务完成
         for(let task of finishedTasks){
-            logger += `task ${task.id} done, free ${task.cpu} cpus for machine ${task.machineId}\n`;
+            logger.push(`task ${task.id} done, free ${task.cpu} cpus for machine ${task.machineId}`);
             await onTaskDone(task);
         }
     }else{
-        logger += `no more task to run, end arbitration \n`;
+        logger.push(`no more task to run, end arbitration`);
     }
-    return logger;
 }
 
 /**
