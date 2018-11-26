@@ -30,25 +30,25 @@ npm install
 pm2 start process.json
 ```
 
-This programe provide 5 RESTful APIs for test
+This programe provide 5 RESTful APIs for test:
 
-1. add machine data to database:
+- add machine data to database:
 
 [POST]  your server ip:3000/addTestMachines
 
-2. add task data to database:
+- add task data to database:
 
 [POST]  your server ip:3000/addTestTasks
 
-3. run simulation and output logs:
+- run simulation and output logs:
 
 [GET]  your server ip:3000/runTest
   
-4. run simulation step by step, and output chinese logs:
+- run simulation step by step, and output chinese logs:
 
 [GET] your server ip:3000/runTestStep
   
-5. remove test data, must run everytime before each test:
+- remove test data, must run everytime before each test:
 
 [POST] your server ip:3000/reset
   
