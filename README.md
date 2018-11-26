@@ -25,21 +25,26 @@ $pm2 start process.json
 This programe provide 5 RESTful APIs for test
 
 1. add machine data to database:
-[POST] <server ip>:3000/addTestMachines
+
+[POST]  your server ip:3000/addTestMachines
 
 2. add task data to database:
-[POST] <server ip>:3000/addTestTasks
+
+[POST]  your server ip:3000/addTestTasks
 
 3. run simulation and output logs:
-[GET] <server ip>:3000/runTest
+
+[GET]  your server ip:3000/runTest
   
 4. run simulation step by step, and output chinese logs:
-[GET]<server ip>:3000/runTestStep
+
+[GET] your server ip:3000/runTestStep
   
 5. remove test data, must run everytime before each test:
-[POST] <server ip>:3000/reset
+
+[POST] your server ip:3000/reset
   
-see param examples of APIs description or test on my server by importing POSTMAN collection link below:
+see params examples of APIs description or test on my server by importing POSTMAN collection link below:
 
 https://www.getpostman.com/collections/c99c8cc6f96efc52d59f
 
