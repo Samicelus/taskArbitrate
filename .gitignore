@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+node_modules
+config.production
+backups
+package-lock.json
