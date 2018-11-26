@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "taskArbitrate",
+      "script": "./app.js",
+      "watch": false,
+      "error_file": "/data/logs/nodes/taskArbitrate-error.log",
+      "out_file": "/data/logs/nodes/taskArbitrate-out.log",
+      "env": {
+        "NODE_ENV": "dev"
+      }
+    }
+  ]
+}
