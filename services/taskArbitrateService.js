@@ -179,7 +179,7 @@ async function getTasks(logger) {
         machineId: {"$exists": false}
     };
     let tasks = await Task.schema.find(condition).sort({id: 1}).exec();
-    logger.push(`found ${tasks.length} tasks...`);
+    logger.push(`找到 ${tasks.length} 个 任务...`);
     await arbitrateTasks(tasks, logger)
 }
 
@@ -195,11 +195,11 @@ async function arbitrateTasks(tasks, logger){
             machine.freeCpus -= current_task.cpus;
             machine.usedCpus += current_task.cpus;
             await machine.save();
-            logger.push(`run task ${current_task.id} on machine ${machine.id}, cpu: ${machine.freeCpus}/${machine.cpus}`);
+            logger.push(`在机器:${machine.id} 上执行任务: ${current_task.id}, cpu剩余: ${machine.freeCpus}/${machine.cpus}`);
             current_task.machineId = machine.id;
             await current_task.save();
         }else{
-            logger.push(`no machine scheduled for task ${current_task.id}`);
+            logger.push(`没有可用机器分配给任务: ${current_task.id}`);
         }
         await arbitrateTasks(tasks, logger);
     }
@@ -223,15 +223,15 @@ async function simulateTaskRunOnce(logger){
 
         //消耗时间
         await Task.schema.update(condition,{"$inc":{"timeLeft":-timeDecrease}}, {"multi":true});
-        logger.push(`time passed by ${timeDecrease} sec`);
+        logger.push(`时间过去了 ${timeDecrease} 秒`);
 
         //触发每个任务完成
         for(let task of finishedTasks){
-            logger.push(`task ${task.id} done, free ${task.cpus} cpus for machine ${task.machineId}`);
+            logger.push(`任务: ${task.id} 执行完毕, 为 机器: ${task.machineId} 释放了 ${task.cpus} 个 cpu`);
             await onTaskDone(task);
         }
     }else{
-        logger.push(`no more task to run, end arbitration`);
+        logger.push(`没有可执行的任务，停止模拟`);
     }
 }
 
