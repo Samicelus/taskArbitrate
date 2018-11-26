@@ -170,6 +170,7 @@ handlers.runTestStep = async function(ctx, next) {
     handlers.restSuccess(ctx, logger);
 };
 
+//模拟一次分配
 async function getTasks(logger) {
     //提取task，并按id排序
     let condition = {
@@ -202,7 +203,7 @@ async function arbitrateTasks(tasks, logger){
     }
 }
 
-//模拟任务进行
+//模拟任务进行一次
 async function simulateTaskRunOnce(logger){
     //查询分配到的任务
     let condition = {
@@ -226,7 +227,7 @@ async function simulateTaskRunOnce(logger){
         for(let task of finishedTasks){
             logger.push(`task ${task.id} done, free ${task.cpu} cpus for machine ${task.machineId}`);
             await onTaskDone(task);
-        }
+        }s
     }else{
         logger.push(`no more task to run, end arbitration`);
     }
