@@ -14,6 +14,7 @@ async function onTaskDone(task) {
     //释放cpu数
     let machineId = task.machineId;
     let machineObj = await Task.schema.findOne({id:machineId}).exec();
+    console.log(`now free cpu for:`,machineObj);
     machineObj.freeCpus += 1;
     machineObj.usedCpus -= 1;
     await machineObj.save();
