@@ -93,7 +93,7 @@ handlers.addTestMachines = async function(ctx, next) {
     	throw new Error(`machines is not an array!`);
     }
 
-    await Machine.schema.insertMany(params.machines).exec();
+    await Machine.schema.insertMany(params.machines);
     handlers.restSuccess(ctx, params.machines);
 };
 
@@ -111,7 +111,7 @@ handlers.addTestTasks = async function(ctx, next) {
         throw new Error(`tasks is not an array!`);
     }
 
-    await Task.schema.insertMany(params.tasks).exec();
+    await Task.schema.insertMany(params.tasks);
     handlers.restSuccess(ctx, params.tasks);
 };
 
