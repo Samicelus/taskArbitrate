@@ -81,6 +81,10 @@ async function arbitrateSequence(tasks){
     }
 }
 
+async function simulateTaskRun(){
+
+}
+
 /**
  * @samicelus 添加测试机器
  **/
@@ -122,6 +126,15 @@ handlers.addTestTasks = async function(ctx, next) {
  **/
 handlers.runTest = async function(ctx, next) {
     await runSimulation();
+    handlers.restSuccess(ctx, "done");
+};
+
+/**
+ * @samicelus 清空测试数据库
+ **/
+handlers.reset = async function(ctx, next) {
+    await Machine.schema.remove({},{"multi":true});
+    await Task.schema.remove({},{"multi":true});
     handlers.restSuccess(ctx, "done");
 };
 
