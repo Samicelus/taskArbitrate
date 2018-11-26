@@ -198,7 +198,7 @@ async function arbitrateTasks(tasks, logger){
         }else{
             logger.push(`no machine scheduled for task ${current_task.id}`);
         }
-        await arbitrateTasks(tasks);
+        await arbitrateTasks(tasks, logger);
     }
 }
 
