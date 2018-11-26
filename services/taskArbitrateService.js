@@ -14,8 +14,8 @@ async function onTaskDone(task) {
     //释放cpu数
     let machineId = task.machineId;
     let machineObj = await Machine.schema.findOne({id:machineId}).exec();
-    machineObj.freeCpus += 1;
-    machineObj.usedCpus -= 1;
+    machineObj.freeCpus += task.cpus;
+    machineObj.usedCpus -= task.cpus;
     await machineObj.save();
     console.log(`machine ${machineObj.id} free cpus num is :${machineObj.freeCpus}`);
 }
@@ -69,8 +69,8 @@ async function arbitrateSequence(tasks){
 
         //执行
         if(machine != null){
-            machine.freeCpus -= 1;
-            machine.usedCpus += 1;
+            machine.freeCpus -= current_task.cpus;
+            machine.usedCpus += current_task.cpus;
             await machine.save();
 
             current_task.machineId = machine.id;
@@ -159,6 +159,80 @@ handlers.runTest = async function(ctx, next) {
     await runSimulation();
     handlers.restSuccess(ctx, "done");
 };
+
+/**
+ * @samicelus 分步测试
+ **/
+handlers.runTestStep = async function(ctx, next) {
+    let logger = await getTasks("");
+    logger = await simulateTaskRunOnce(logger);
+    handlers.restSuccess(ctx, logger);
+};
+
+async function getTasks(logger) {
+    //提取task，并按id排序
+    let condition = {
+        machineId: {"$exists": false}
+    };
+    let tasks = await Task.schema.find(condition).sort({id: 1}).exec();
+    logger += `found ${tasks.length} tasks...\n`;
+    await arbitrateTasks(tasks, logger)
+}
+
+//递归执行机器分配,直至task全部分配一次
+async function arbitrateTasks(tasks, logger){
+    if(tasks.length > 0){
+        //给task 分配 machine
+        let current_task = tasks.shift();
+        let machine = await onTaskSchedule(current_task);
+
+        //执行
+        if(machine != null){
+            machine.freeCpus -= current_task.cpus;
+            machine.usedCpus += current_task.cpus;
+            await machine.save();
+            logger += `run task ${current_task.id} on machine ${machine.id}, cpu: ${machine.freeCpus}/${machine.cpus} \n`;
+            current_task.machineId = machine.id;
+            await current_task.save();
+        }else{
+            logger += `no machine scheduled for task ${current_task.id} \n`;
+        }
+        await arbitrateTasks(tasks);
+    }else{
+        return logger;
+    }
+}
+
+//模拟任务进行
+async function simulateTaskRunOnce(logger){
+    //查询分配到的任务
+    let condition = {
+        machineId: {"$exists": true},
+        timeLeft: {"$gt": 0}
+    };
+    let runnningTasks = await Task.schema.find(condition).sort({timeLeft: 1}).exec();
+    if(runnningTasks.length > 0){
+        let timeDecrease = runnningTasks[0].timeLeft;
+        let finishCondition = {
+            machineId: {"$exists": true},
+            timeLeft: timeDecrease
+        };
+        let finishedTasks = await Task.schema.find(finishCondition).exec();
+
+        //消耗时间
+        await Task.schema.update(condition,{"$inc":{"timeLeft":-timeDecrease}}, {"multi":true});
+        logger += `time passed by ${timeDecrease} sec \n`;
+
+        //触发每个任务完成
+        for(let task of finishedTasks){
+            logger += `task ${task.id} done, free ${task.cpu} cpus for machine ${task.machineId}\n`;
+            await onTaskDone(task);
+        }
+    }else{
+        logger += `no more task to run, end arbitration \n`;
+    }
+    return logger;
+}
 
 /**
  * @samicelus 清空测试数据库
