@@ -3,15 +3,18 @@ an interview question
 
 main functions are in services/taskArbitrateServices.js
 
-line 9 
+line 9
+
 line 21
 
 
 # Install
 
-$ git clone https://github.com/Samicelus/taskArbitrate.git
-$ cd taskArbitrate
-$ npm install
+```
+git clone https://github.com/Samicelus/taskArbitrate.git
+cd taskArbitrate
+npm install
+```
 
 # Start Server
 
@@ -20,7 +23,9 @@ $ npm install
 -install pm2
 -config process.json for logger path
 
-$pm2 start process.json
+```
+pm2 start process.json
+```
 
 This programe provide 5 RESTful APIs for test
 
