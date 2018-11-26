@@ -39,6 +39,7 @@ This programe provide 5 RESTful APIs for test
 5. remove test data, must run everytime before each test:
 [POST] <server ip>:3000/reset
   
-see param examples of APIs description or test on my server by import POSTMAN link below:
+see param examples of APIs description or test on my server by importing POSTMAN collection link below:
+
 https://www.getpostman.com/collections/c99c8cc6f96efc52d59f
 
