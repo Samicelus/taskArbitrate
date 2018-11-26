@@ -164,9 +164,9 @@ handlers.runTest = async function(ctx, next) {
  * @samicelus 分步测试
  **/
 handlers.runTestStep = async function(ctx, next) {
-    let logger = await getTasks("");
-    logger = await simulateTaskRunOnce(logger);
-    handlers.restSuccess(ctx, logger);
+    let logger_1 = await getTasks("");
+    let logger_2 = await simulateTaskRunOnce("");
+    handlers.restSuccess(ctx, logger_1+logger_2);
 };
 
 async function getTasks(logger) {
