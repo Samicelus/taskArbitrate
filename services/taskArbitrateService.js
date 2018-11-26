@@ -100,7 +100,7 @@ async function simulateTaskRun(){
         let finishedTasks = await Task.schema.find(finishCondition).exec();
 
         //消耗时间
-        await Task.schema.update(condition,{"$inc":{"timeLeft":-timeDecrease}});
+        await Task.schema.update(condition,{"$inc":{"timeLeft":-timeDecrease}}, {"multi":true});
         console.log(`time passed by ${timeDecrease} sec ...`);
 
         //触发每个任务完成
