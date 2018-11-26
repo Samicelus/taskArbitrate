@@ -18,10 +18,13 @@ npm install
 
 # Start Server
 
--run mongodb on port 27017
--run redis on 6379
--install pm2
--config process.json for logger path
+- run mongodb on port 27017
+
+- run redis on 6379
+
+- install pm2
+
+- config process.json for logger path
 
 ```
 pm2 start process.json
