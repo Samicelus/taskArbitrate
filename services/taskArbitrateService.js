@@ -49,19 +49,19 @@ async function onTaskSchedule(task){
     return temp_result;
 }
 
-async function runSimulation() {
+async function runSimulation(logger) {
     //提取task，并按id排序
     console.log(`getting tasks...`);
     let condition = {
         machineId: {"$exists": false}
     };
     let tasks = await Task.schema.find(condition).sort({id: 1}).exec();
-    console.log(`found ${tasks.length} tasks...`);
-    await arbitrateSequence(tasks)
+    logger.push(`found ${tasks.length} tasks...`);
+    await arbitrateSequence(tasks, logger)
 }
 
 //递归执行机器分配,直至task全部分配一次
-async function arbitrateSequence(tasks){
+async function arbitrateSequence(tasks, logger){
     if(tasks.length > 0){
         //给task 分配 machine
         let current_task = tasks.shift();
@@ -72,18 +72,20 @@ async function arbitrateSequence(tasks){
             machine.freeCpus -= current_task.cpus;
             machine.usedCpus += current_task.cpus;
             await machine.save();
-
+            logger.push(`run task ${current_task.id} on machine ${machine.id}, cpu: ${machine.freeCpus}/${machine.cpus}`);
             current_task.machineId = machine.id;
             await current_task.save();
+        }else{
+            logger.push(`no machine scheduled for task ${current_task.id}`);
         }
-        await arbitrateSequence(tasks);
+        await arbitrateSequence(tasks, logger);
     }else{
-       await simulateTaskRun();
+       await simulateTaskRun(logger);
     }
 }
 
 //模拟任务进行
-async function simulateTaskRun(){
+async function simulateTaskRun(logger){
     //查询分配到的任务
     let condition = {
         machineId: {"$exists": true},
@@ -93,7 +95,7 @@ async function simulateTaskRun(){
     if(runnningTasks.length > 0){
         let timeDecrease = runnningTasks[0].timeLeft;
 
-        console.log(`less time task ${runnningTasks[0].id}, time left: ${timeDecrease} sec ...`);
+        logger.push(`less time task ${runnningTasks[0].id}, time left: ${timeDecrease} sec ...`)
         let finishCondition = {
             machineId: {"$exists": true},
             timeLeft: timeDecrease
@@ -102,17 +104,18 @@ async function simulateTaskRun(){
 
         //消耗时间
         await Task.schema.update(condition,{"$inc":{"timeLeft":-timeDecrease}}, {"multi":true});
-        console.log(`time passed by ${timeDecrease} sec ...`);
+        logger.push(`time passed by ${timeDecrease} sec ...`);
 
         //触发每个任务完成
         for(let task of finishedTasks){
+            logger.push(`task ${task.id} done, free ${task.cpus} cpus for machine ${task.machineId}`);
             await onTaskDone(task);
         }
 
         //再次执行任务分配
-        await runSimulation();
+        await runSimulation(logger);
     }else{
-        console.log(`no more task to run, end arbitration`);
+        logger.push(`no more task to run, end arbitration`);
     }
 }
 
@@ -156,8 +159,9 @@ handlers.addTestTasks = async function(ctx, next) {
  * @samicelus 测试分配任务
  **/
 handlers.runTest = async function(ctx, next) {
-    await runSimulation();
-    handlers.restSuccess(ctx, "done");
+    let logger = [];
+    await runSimulation(logger);
+    handlers.restSuccess(ctx, logger);
 };
 
 /**
@@ -225,9 +229,9 @@ async function simulateTaskRunOnce(logger){
 
         //触发每个任务完成
         for(let task of finishedTasks){
-            logger.push(`task ${task.id} done, free ${task.cpu} cpus for machine ${task.machineId}`);
+            logger.push(`task ${task.id} done, free ${task.cpus} cpus for machine ${task.machineId}`);
             await onTaskDone(task);
-        }s
+        }
     }else{
         logger.push(`no more task to run, end arbitration`);
     }
