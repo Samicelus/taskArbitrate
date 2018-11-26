@@ -12,7 +12,7 @@
       {"mimetype":"audio/x-m4a", "type":"voice"},
       {"mimetype":"image/png", "type":"image"}
     ],
-    "file_root": "https://nanshanspecial-1253714281.cosgz.myqcloud.com/",
+    "file_root": "",
     "max_upload_size":10485760
   },
   "dev":{
@@ -28,7 +28,7 @@
       {"mimetype":"audio/x-m4a", "type":"voice"},
       {"mimetype":"image/png", "type":"image"}
     ],
-    "file_root": "https://nanshanspecial-1253714281.cosgz.myqcloud.com/",
+    "file_root": "",
     "max_upload_size":10485760
   }
 }
