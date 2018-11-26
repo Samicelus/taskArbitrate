@@ -195,7 +195,7 @@ async function arbitrateTasks(tasks, logger){
             machine.freeCpus -= current_task.cpus;
             machine.usedCpus += current_task.cpus;
             await machine.save();
-            logger.push(`在机器:${machine.id} 上执行任务: ${current_task.id}, cpu剩余: ${machine.freeCpus}/${machine.cpus}`);
+            logger.push(`在机器:${machine.id} 上执行任务: ${current_task.id},预计耗时 ${current_task.times} 秒, cpu剩余: ${machine.freeCpus}/${machine.cpus}`);
             current_task.machineId = machine.id;
             await current_task.save();
         }else{
