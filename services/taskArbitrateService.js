@@ -93,6 +93,8 @@ async function simulateTaskRun(){
     let runnningTasks = await Task.schema.find(condition).sort({timeLeft: 1}).exec();
     if(runnningTasks.length > 0){
         let timeDecrease = runnningTasks[0].timeLeft;
+
+        console.log(`less time task ${runnningTasks[0].id}, time left: ${timeDecrease} sec ...`);
         let finishCondition = {
             machineId: {"$exists": true},
             timeLeft: timeDecrease
