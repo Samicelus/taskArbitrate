@@ -4,8 +4,8 @@
       "name": "taskArbitrate",
       "script": "./app.js",
       "watch": false,
-      "error_file": "/data/logs/nodes/taskArbitrate-error.log",
-      "out_file": "/data/logs/nodes/taskArbitrate-out.log",
+      "error_file": "/data/log/node/taskArbitrate-error.log",
+      "out_file": "/data/log/node/taskArbitrate-out.log",
       "env": {
         "NODE_ENV": "dev"
       }
