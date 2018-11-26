@@ -17,6 +17,7 @@ async function onTaskDone(task) {
     machineObj.freeCpus += 1;
     machineObj.usedCpus -= 1;
     await machineObj.save();
+    console.log(`machine ${machineObj.id} free cpus num is :${machineObj.freeCpus}`);
 }
 
 // 当需要任务开始执行时调用, 返回当前可执行该任务的 Machine, 如没有满足条件的 Machine 则返回 null
