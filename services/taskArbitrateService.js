@@ -78,11 +78,36 @@ async function arbitrateSequence(tasks){
             setTimeout(await onTaskDone(current_task), current_task.times*1000);
         }
         await arbitrateSequence(tasks);
+    }else{
+       await simulateTaskRun();
     }
 }
 
+//模拟任务进行
 async function simulateTaskRun(){
+    //查询分配到的任务
+    let condition = {
+        machineId: {"$exists": true},
+        timeLeft: {"$gt": 0}
+    };
+    let runnningTasks = await Task.schema.find(condition).sort({timeLeft: 1}).exec();
+    if(runnningTasks.length > 0){
+        let timeDecrease = runnningTasks[0].timeLeft;
+        let finishCondition = {
+            machineId: {"$exists": true},
+            timeLeft: timeDecrease
+        };
+        let finishedTasks = await Task.schema.find(finishCondition).exec();
 
+        //消耗时间
+        await Task.schema.update(condition,{"$inc":{"timeLeft":-timeDecrease}});
+        console.log(`time passed by ${timeDecrease} sec ...`);
+
+        //触发每个任务完成
+        finishedTasks.forEach(async (task)=>{
+            await onTaskDone(task);
+        })
+    }
 }
 
 /**
