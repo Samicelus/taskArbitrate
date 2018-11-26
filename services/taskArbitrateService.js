@@ -52,10 +52,12 @@ async function onTaskSchedule(task){
 
 async function runSimulation() {
     //提取task，并按id排序
+    console.log(`getting tasks...`);
     let condition = {
         machineId: {"$exists": true}
     };
     let tasks = await Task.schema.find(condition).sort({id: 1}).exec();
+    console.log(`found ${tasks.length} tasks...`);
     await arbitrateSequence(tasks)
 }
 
