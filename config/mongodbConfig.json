@@ -1,16 +1,16 @@
 {
   "production":{
-    "host": "10.240.242.175",
+    "host": "127.0.0.1",
     "port": "27017",
-    "db": "HuaXi",
-    "user": "groups",
-    "pwd": "459d693e"
+    "db": "test",
+    "user": "",
+    "pwd": ""
   },
   "dev":{
-    "host": "mongodb",
+    "host": "127.0.0.1",
     "port": "27017",
-    "db": "huaxi",
-    "user": "huaxi",
-    "pwd": "541R4evB"
+    "db": "test",
+    "user": "",
+    "pwd": ""
   }
 }
