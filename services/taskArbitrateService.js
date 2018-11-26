@@ -5,7 +5,11 @@ const Machine = require('../models/machine.js');
 const BaseHandler = require(path.join(__dirname, '../libs/baseHandler.js'));
 let handlers = new BaseHandler();
 
-// 当任务完成时调用, 当任务被分配到机器上 Task.times 之后调用
+/* 当任务完成时调用, 当任务被分配到机器上 Task.times 之后调用
+*
+*  释放执行完task对应的机器cpu
+*/
+
 async function onTaskDone(task) {
     //console.log(`task: ${task.id} done in: ${task.times} sec, free cpu num for machine: ${task.machineId}`);
     //释放cpu数
@@ -17,7 +21,12 @@ async function onTaskDone(task) {
     //console.log(`machine ${machineObj.id} free cpus num is :${machineObj.freeCpus}`);
 }
 
-// 当需要任务开始执行时调用, 返回当前可执行该任务的 Machine, 如没有满足条件的 Machine 则返回 null
+/* 当需要任务开始执行时调用, 返回当前可执行该任务的 Machine, 如没有满足条件的 Machine 则返回 null
+*
+*  -->优先寻找group名匹配且有可用cpu的机器，按id从小到大排序
+*  -->若无结果则寻找有可用cpu的机器，按id从小到大排序
+*  -->若仍无结果则输出 null
+*/
 async function onTaskSchedule(task){
     let temp_result = null;
     let task_group = task.group;
