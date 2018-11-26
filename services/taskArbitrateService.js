@@ -89,7 +89,7 @@ handlers.addTestMachines = async function(ctx, next) {
 	};
 
 	console.log(params);
-    if (!params.machines.isArray()) {
+    if (!Array.isArray(params.machines)) {
     	throw new Error(`machines is not an array!`);
     }
 
@@ -107,7 +107,7 @@ handlers.addTestTasks = async function(ctx, next) {
     };
 
     console.log(params);
-    if (!params.tasks.isArray()) {
+    if (!Array.isArray(params.tasks)) {
         throw new Error(`tasks is not an array!`);
     }
 
