@@ -75,7 +75,7 @@ async function arbitrateSequence(tasks){
             await machine.save();
 
             current_task.machineId = machine.id;
-            setTimeout(await onTaskDone(current_task), current_task.times*1000);
+            await current_task.save();
         }
         await arbitrateSequence(tasks);
     }else{
