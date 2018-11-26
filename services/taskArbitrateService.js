@@ -105,9 +105,9 @@ async function simulateTaskRun(){
         console.log(`time passed by ${timeDecrease} sec ...`);
 
         //触发每个任务完成
-        finishedTasks.forEach(async (task)=>{
+        for(let task of finishedTasks){
             await onTaskDone(task);
-        });
+        }
 
         //再次执行任务分配
         await runSimulation();
