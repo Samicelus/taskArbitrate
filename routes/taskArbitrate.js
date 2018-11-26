@@ -5,6 +5,6 @@ module.exports = (router)=>{
     router.post('/addTestMachines', handler.addTestMachines);
     router.post('/addTestTasks', handler.addTestTasks);
     router.get('/runTest', handler.runTest);
-    router.get('/runTest', handler.runTestStep);
+    router.get('/runTestStep', handler.runTestStep);
     router.post('/reset', handler.reset);
 };
