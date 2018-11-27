@@ -30,7 +30,7 @@ npm install
 pm2 start process.json
 ```
 
-This programe provide 5 RESTful APIs for test:
+This server provides 5 RESTful APIs for testing:
 
 - add machine data to database:
 
